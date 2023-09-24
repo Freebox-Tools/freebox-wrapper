@@ -1,0 +1,22 @@
+{
+	"name": "freebox-wrapper",
+	"version": "1.0.0",
+	"description": "Un wrapper pour l'API de Freebox OS, gère la connexion et facilite les requêtes.",
+	"main": "index.js",
+	"keywords": [
+		"freebox",
+		"sdk",
+		"wrapper",
+		"api",
+		"freeboxos",
+		"iliad"
+	],
+	"author": "JohanStickman",
+	"license": "MIT",
+	"devDependencies": {
+		"eslint": "^8.50.0"
+	},
+	"dependencies": {
+		"node-fetch": "2.6.7"
+	}
+}
