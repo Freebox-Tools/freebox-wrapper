@@ -21,7 +21,7 @@ function FreeboxClient(options = {}){
 	this.options = {}
 	this.options.verbose = options.verbose || false
 	this.options.apiDomain = options.apiDomain || "mafreebox.freebox.fr"
-	this.options.httpsPort = options.httpsPort || 443
+	this.options.httpsPort = options.httpsPort
 	this.options.appId = options.appId
 	this.options.appToken = options.appToken
 	this.options.apiBaseUrl = options.apiBaseUrl || "/api/"
@@ -62,8 +62,8 @@ async function RegisterFreebox(options = { showLogs: true, appId: "fbx.example",
 	})
 
 	// On vérifie qu'on peut atteindre le serveur
-	var freebox = await _fetch("https://mafreebox.freebox.fr/api/v8/api_version", { agent })
-	if(!freebox.ok){
+	var freebox = await _fetch("https://mafreebox.freebox.fr/api/v8/api_version", { agent }).catch(() => {})
+	if(!freebox?.ok){
 		if(options.showLogs) console.error("Impossible de joindre le serveur de votre Freebox (mafreebox.freebox.fr). Êtes-vous bien connecté au même réseau que votre Freebox ?")
 		return "UNREACHABLE"
 	}
@@ -94,7 +94,7 @@ async function RegisterFreebox(options = { showLogs: true, appId: "fbx.example",
 		headers: {
 			"Content-Type": "application/json"
 		}
-	})
+	}).catch(() => {})
 
 	// On parse en JSON
 	try {
@@ -122,8 +122,8 @@ async function RegisterFreebox(options = { showLogs: true, appId: "fbx.example",
 		await new Promise(resolve => setTimeout(resolve, 2000))
 
 		// On vérifie le status
-		var status = await _fetch(`https://mafreebox.freebox.fr/api/v8/login/authorize/${register.result.track_id}`, { agent })
-		if(!status.ok){
+		var status = await _fetch(`https://mafreebox.freebox.fr/api/v8/login/authorize/${register.result.track_id}`, { agent }).catch(() => {})
+		if(!status?.ok){
 			if(options.showLogs) console.error("Impossible de vérifier l'autorisation de votre Freebox. Êtes-vous bien connecté au même réseau que votre Freebox ?")
 			return "UNREACHABLE"
 		}
@@ -178,7 +178,7 @@ async function fetch(_options){
 		if(url.startsWith("/")) url = url.substring(1)
 
 		// On ajoute le domaine
-		url = `https://${this.options.apiDomain}:${this.options.httpsPort}${this.options.apiBaseUrl}${url}`
+		url = `https://${this.options.apiDomain}${this.options.httpsPort ? (`:${this.options.httpsPort}`) : ""}${this.options.apiBaseUrl}${url}`
 	}
 
 	// On enlève des options, et on ajoute l'agent
@@ -197,11 +197,11 @@ async function fetch(_options){
 	}
 
 	// Faire la requête
-	var response = await _fetch(url, options)
+	var response = await _fetch(url, options).catch(() => {})
 	if(this.options.verbose) console.info("Fetched:", response.status, response.statusText)
 
 	// Si la requête a échoué
-	if(!response.ok){
+	if(!response?.ok){
 		// On parse le json
 		var json
 		try {
@@ -241,7 +241,7 @@ async function fetch(_options){
 // Fonction pour s'authentifier
 /**
  * Permet de s'authentifier auprès de l'API de la Freebox
- * @returns {Object} Informations d'après-connexion
+ * @returns {Boolean} Si l'authentification a réussi
 */
 async function authentificate(){
 	// Obtenir le challenge
@@ -282,7 +282,7 @@ async function authentificate(){
 	this.freebox = freebox
 
 	// On retourne la réponse
-	return auth
+	return { success: true, freebox }
 }
 
 // On exporte ce qu'il faut
