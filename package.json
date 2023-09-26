@@ -1,6 +1,6 @@
 {
 	"name": "freebox-wrapper",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Un wrapper pour l'API de Freebox OS, gère la connexion et facilite les requêtes.",
 	"main": "index.js",
 	"keywords": [
@@ -13,6 +13,10 @@
 	],
 	"author": "JohanStickman",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Freebox-Tools/freebox-wrapper.git"
+	},
 	"devDependencies": {
 		"eslint": "^8.50.0"
 	},
