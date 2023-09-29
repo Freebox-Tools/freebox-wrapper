@@ -104,6 +104,7 @@ async function RegisterFreebox(options = { showLogs: true, appId: "fbx.example",
 		register = "UNPARSABLE"
 	}
 	if(!register?.success){
+		if(options.showLogs) console.log(register)
 		if(options.showLogs) console.error(`Impossible de demander l'autorisation à votre Freebox. ${register.msg || register}`)
 		return "CANNOT_ASK_AUTHORIZATION"
 	}
