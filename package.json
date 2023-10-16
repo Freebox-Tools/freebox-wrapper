@@ -1,6 +1,6 @@
 {
 	"name": "freebox-wrapper",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"description": "Un wrapper pour l'API de Freebox OS, gère la connexion et facilite les requêtes.",
 	"main": "index.js",
 	"keywords": [

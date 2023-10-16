@@ -252,9 +252,10 @@ async function authentificate(){
 	})
 	if(this.options.verbose) console.info("Got challenge:", challenge?.result?.challenge || challenge?.msg || challenge)
 	if(!challenge.success) return challenge
+	if(!challenge?.result?.challenge) return { success: false, msg: `No challenge was given for an unknown reason: ${challenge?.msg || challenge?.message || challenge?.result?.msg || challenge?.result?.message || challenge?.status_code}`, challenge }
 
 	// Déterminer le mot de passe
-	var password = createHmac("sha1", this.options.appToken).update(challenge.result.challenge).digest("hex")
+	var password = createHmac("sha1", this.options.appToken).update(challenge?.result?.challenge).digest("hex")
 	if(this.options.verbose) console.info("Password for challenge:", password)
 
 	// On s'authentifie
