@@ -197,9 +197,15 @@ async function fetch(_options){
 		if(this.options.verbose) console.info("Added token to request:", this.sessionToken)
 	}
 
+	// Définir un controller pour pouvoir timeout la requête
+	var controller = new AbortController()
+	if(!options.signal) options.signal = controller.signal
+	var controllerTimeout = setTimeout(() => controller.abort(), 7000)
+
 	// Faire la requête
 	var response = await _fetch(url, options).catch(() => {})
 	if(this.options.verbose) console.info("Fetched:", response.status, response.statusText)
+	clearTimeout(controllerTimeout) // On enlève le timeout
 
 	// Si la requête a échoué
 	if(!response?.ok){
