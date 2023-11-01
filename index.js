@@ -258,7 +258,26 @@ async function authentificate(){
 	})
 	if(this.options.verbose) console.info("Got challenge:", challenge?.result?.challenge || challenge?.msg || challenge)
 	if(!challenge.success) return challenge
-	if(!challenge?.result?.challenge) return { success: false, msg: `No challenge was given for an unknown reason: ${challenge?.msg || challenge?.message || challenge?.result?.msg || challenge?.result?.message || challenge?.status_code}`, challenge }
+
+	// Si on a pas de challenge
+	if(!challenge?.result?.challenge){
+		// Si on est déjà connecté
+		if(challenge?.result?.logged_in){
+			// On fait une requête qui nécessite d'être connecté
+			if(this.options.verbose) console.info("Seems we were already logged in, double-checking...")
+			var freeboxSystem = await this.fetch({
+				url: "v8/system",
+				parseJson: true
+			})
+			if(this.options.verbose) console.info("Got freebox system (for double-checking the login):", freeboxSystem)
+
+			// Si ça a marché, on retourne qu'on est connecté
+			if(freeboxSystem.success) return { success: true, freebox: this.freebox }
+		}
+
+		// On dit que le challenge a pas marché
+		return { success: false, msg: `No challenge was given for an unknown reason: ${challenge?.msg || challenge?.message || challenge?.result?.msg || challenge?.result?.message || challenge?.status_code}`, challenge }
+	}
 
 	// Déterminer le mot de passe
 	var password = createHmac("sha1", this.options.appToken).update(challenge?.result?.challenge).digest("hex")
